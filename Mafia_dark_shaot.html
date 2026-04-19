@@ -1,1 +1,766 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mafia Lobby 3D Ultimate</title>
 
+<link rel="preload" as="image" href="https://s6.uplod.ir/i/01186/t0p60690emag_t.jpg">
+<link rel="preload" as="image" href="https://s6.uplod.ir/i/01186/11ozygqreso3_t.jpg">
+<link rel="preload" as="image" href="https://s6.uplod.ir/i/01186/5j5s8u7t8cvj_t.jpg">
+<link rel="preload" as="image" href="https://s6.uplod.ir/i/01186/v21pphhvldxv_t.jpg">
+<link rel="preconnect" href="https://uploadkon.ir">
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:tahoma;
+}
+
+body{
+  height:100vh;
+  background:
+    linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.2)),
+    url('https://s6.uplod.ir/i/01186/t0p60690emag_t.jpg') no-repeat center center/cover;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  position:relative;
+  overflow:hidden;
+  image-rendering: auto;
+}
+
+body::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:radial-gradient(circle at 70% 15%, rgba(0,120,255,0.1), transparent 65%);
+  pointer-events:none;
+}
+
+/* ===== RIGHT MENU ===== */
+.right-menu{
+  position:absolute;
+  right:0;
+  top:0;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  padding:10px;
+  border-bottom-left-radius:35px;
+  background:linear-gradient(145deg, rgba(0,120,255,0.25), rgba(0,40,120,0.35));
+  backdrop-filter:blur(16px);
+  border-left:2px solid rgba(0,180,255,0.4);
+  border-bottom:2px solid rgba(0,180,255,0.4);
+  box-shadow:0 0 26px rgba(0,140,255,0.65), inset 0 0 22px rgba(0,200,255,0.35);
+  z-index:5;
+}
+
+.side-img{
+  width:65px;
+  height:65px;
+  object-fit:cover;
+  border-radius:18px;
+  cursor:pointer;
+  transition: all 0.35s ease;
+  background:linear-gradient(145deg, rgba(0,160,255,0.35), rgba(0,60,130,0.45));
+  padding:6px;
+  border:2px solid rgba(0,210,255,0.5);
+  box-shadow:0 0 16px rgba(0,150,255,0.65), inset 0 0 11px rgba(0,210,255,0.35);
+}
+
+.side-img:hover{
+  transform:scale(1.1) rotateY(5deg);
+  box-shadow:0 0 30px rgba(0,210,255,0.85), inset 0 0 16px rgba(0,210,255,0.55);
+}
+
+/* ===== SIMPLE PROFILE BOX (فقط عکس جدید جایگزین شده) ===== */
+.profile-box{
+  position:absolute;
+  top:10px;
+  left:0px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  background:rgba(0,0,0,0.5);
+  padding:6px 14px;
+  border-radius:30px;
+  backdrop-filter:blur(8px);
+  box-shadow:0 0 18px rgba(0,0,0,0.8);
+  z-index:10;
+}
+
+.profile-img{
+  width:60px;
+  height:60px;
+  border-radius:50%;
+  border:3px solid gold;
+  box-shadow:0 0 0 5px rgba(0,100,255,0.7);
+  image-rendering: auto;
+  object-fit:cover;
+}
+
+.profile-name{
+  color:white;
+  font-size:16px;
+  font-weight:bold;
+}
+
+.main-buttons{
+  display:flex;
+  justify-content:center;
+  gap:25px;
+  padding-bottom:25px;
+  z-index:2;
+  position:absolute;
+  bottom:0;
+  width:100%;
+}
+
+.mafia-btn{
+  width:200px;
+  padding:22px;
+  border:none;
+  border-radius:30px;
+  font-size:18px;
+  font-weight:bold;
+  color:white;
+  cursor:pointer;
+  transition:0.25s;
+}
+
+.rank-btn{
+  background: linear-gradient(145deg,#00e676,#009624);
+  box-shadow:0 0 18px rgba(0,255,100,0.5);
+}
+
+.friend-btn{
+  background: linear-gradient(145deg,#2196f3,#0d47a1);
+  box-shadow:0 0 18px rgba(0,140,255,0.5);
+}
+
+.mafia-btn:hover{
+  transform:scale(1.05);
+}
+
+/* Modal Styles */
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.85);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:20;
+}
+
+.modal-content{
+  background:linear-gradient(145deg,#001f3f,#003c8f);
+  padding:30px;
+  border-radius:25px;
+  width:400px;
+  max-width:90%;
+  text-align:center;
+  color:white;
+  box-shadow:0 0 30px rgba(0,140,255,0.5);
+  border:2px solid rgba(0,180,255,0.3);
+}
+
+.modal-content input{
+  width:100%;
+  padding:12px;
+  margin:15px 0;
+  border:none;
+  border-radius:10px;
+  background:rgba(255,255,255,0.9);
+  font-family:tahoma;
+}
+
+.modal-content button{
+  padding:12px 25px;
+  border:none;
+  border-radius:15px;
+  background:#ff1744;
+  color:white;
+  cursor:pointer;
+  font-weight:bold;
+  margin:5px;
+}
+
+.modal-content button.secondary{
+  background:#2196f3;
+}
+
+.modal-content button.green{
+  background:#00c853;
+}
+
+.hidden{
+  display:none !important;
+}
+
+/* ===== FRIENDLY LOBBY MODAL ===== */
+.lobby-list{
+  max-height:300px;
+  overflow-y:auto;
+  margin:20px 0;
+  padding:5px;
+}
+
+.lobby-item{
+  background:linear-gradient(145deg, #0d3d6b, #082a4d);
+  border:2px solid #2196f3;
+  border-radius:12px;
+  padding:12px;
+  margin-bottom:10px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  color:white;
+}
+
+.lobby-item h4{
+  font-size:14px;
+  color:#00e676;
+  margin-bottom:3px;
+}
+
+.lobby-item p{
+  font-size:12px;
+  opacity:0.8;
+}
+
+.join-btn{
+  background:#00c853;
+  border:none;
+  padding:6px 15px;
+  border-radius:8px;
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+  font-size:12px;
+}
+
+.create-btn{
+  background:#ff1744;
+  border:none;
+  width:50px;
+  height:50px;
+  border-radius:50%;
+  color:white;
+  font-size:24px;
+  font-weight:bold;
+  cursor:pointer;
+  margin:10px auto;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:3px solid #ff5252;
+  box-shadow:0 0 20px #ff1744;
+}
+
+.create-btn:hover{
+  transform:scale(1.1);
+  background:#ff5252;
+}
+
+/* ===== ROOM INSIDE ===== */
+.room-inside{
+  position:fixed;
+  inset:0;
+  background:linear-gradient(180deg,#0b2f55,#071f3a 60%,#05192e);
+  z-index:200;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+
+/* Header */
+.room-header{
+  height:40px;
+  background:#0d3d6b;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 15px;
+  border-bottom:2px solid #2196f3;
+}
+
+.room-header span{
+  color:white;
+  font-size:14px;
+  font-weight:bold;
+}
+
+.leave-room-btn{
+  background:#ff1744;
+  border:none;
+  padding:4px 10px;
+  border-radius:8px;
+  color:white;
+  font-weight:bold;
+  font-size:12px;
+  cursor:pointer;
+}
+
+.room{
+  flex:1;
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  row-gap:22px;
+  padding:10px 35px;
+  align-content:center;
+}
+
+.seat-box{
+  display:flex;
+  align-items:center;
+}
+
+.right{ justify-content:flex-start; }
+.left{ justify-content:flex-end; }
+
+.player{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+.avatar{
+  width:58px;
+  height:58px;
+  border-radius:50%;
+  background-size:cover;
+  background-position:center;
+  border:2.5px solid #888;
+  position:relative;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+  transform: none !important;
+}
+
+.avatar:hover{
+  transform: none !important;
+  scale: 1 !important;
+}
+
+.avatar.ready{
+  border:2.5px solid #00e676;
+  box-shadow:0 0 12px #00e676;
+}
+
+.avatar.notready{
+  border:2.5px solid #ff3d00;
+  box-shadow:0 0 12px #ff3d00;
+}
+
+.seat-number{
+  position:absolute;
+  top:-5px;
+  left:-5px;
+  background:#1aff5c;
+  color:#000;
+  width:18px;
+  height:18px;
+  border-radius:50%;
+  font-size:10px;
+  font-weight:bold;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.name{
+  margin-top:5px;
+  font-size:11px;
+  display:flex;
+  align-items:center;
+  gap:3px;
+  color:white;
+}
+
+.crown{
+  font-size:12px;
+  color:gold;
+}
+
+.empty-seat{
+  width:58px;
+  height:58px;
+  border-radius:50%;
+  background:#163a63;
+  opacity:0.45;
+  border:2px dashed #2196f3;
+}
+
+.bottom-bar{
+  height:70px;
+  background:#082a4d;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:0 30px;
+  border-top:2px solid #2196f3;
+}
+
+.ready-btn{
+  padding:8px 16px;
+  border-radius:12px;
+  font-weight:bold;
+  font-size:13px;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.not-ready{ background:#e53935; }
+.ready{ background:#00c853; }
+
+.mic{
+  width:58px;
+  height:58px;
+  border-radius:16px;
+  background:#1e88e5;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  box-shadow:0 4px 10px rgba(0,0,0,0.4);
+  overflow: hidden;
+}
+
+.mic img{
+  width:100%;
+  height:100%;
+  object-fit: cover;
+  border-radius:16px;
+}
+
+/* offline overlay */
+#offlineOverlay{
+  position:fixed;
+  inset:0;
+  display:none;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  z-index:1000;
+  backdrop-filter:blur(16px);
+  background:rgba(0,0,0,0.35);
+  border:2px solid rgba(0,180,255,0.3);
+  border-radius:25px;
+  box-shadow:0 0 40px rgba(0,140,255,0.5), inset 0 0 20px rgba(0,200,255,0.2);
+}
+
+#offlineOverlay .overlay-box{
+  background:rgba(0,0,0,0.6);
+  padding:30px 50px;
+  border-radius:25px;
+  text-align:center;
+  box-shadow:0 0 30px rgba(0,180,255,0.4), inset 0 0 20px rgba(0,220,255,0.15);
+}
+
+#offlineOverlay .overlay-box div{
+  color:white;
+  font-size:20px;
+  font-weight:bold;
+  text-shadow:0 0 12px rgba(0,200,255,0.7);
+  margin-bottom:15px;
+}
+
+#offlineOverlay .spinner{
+  width:50px;
+  height:50px;
+  border:5px solid rgba(255,255,255,0.3);
+  border-top:5px solid #00a0ff;
+  border-radius:50%;
+  animation:spin 1s linear infinite;
+  margin:0 auto 15px;
+}
+
+@keyframes spin{
+  0%{transform:rotate(0deg);}
+  100%{transform:rotate(360deg);}
+}
+</style>
+</head>
+<body>
+
+<!-- فقط همان کادر ساده قبلی، با عکس جدید -->
+<div class="profile-box">
+  <img src="https://s6.uplod.ir/i/01186/11ozygqreso3_t.jpg"
+       class="profile-img"
+       loading="eager"
+       decoding="async">
+  <div class="profile-name" id="playerName">بازیکن</div>
+</div>
+
+<div class="right-menu">
+  <img src="https://s6.uplod.ir/i/01186/fjgk5o1hy6rm_t.jpg"
+       class="side-img"
+       loading="eager"
+       decoding="async"
+       onclick="comingSoon()">
+  <img src="https://s6.uplod.ir/i/01186/3v8c8witaqwp_t.jpg"
+       class="side-img"
+       loading="eager"
+       decoding="async"
+       onclick="comingSoon()">
+  <img src="https://s6.uplod.ir/i/01186/v21pphhvldxv_t.jpg"
+       class="side-img"
+       loading="eager"
+       decoding="async"
+       onclick="comingSoon()">
+</div>
+
+<div class="main-buttons">
+  <button class="mafia-btn rank-btn">🎖 بازی امتیازی</button>
+  <button class="mafia-btn friend-btn" onclick="openFriendlyModal()">👥 بازی دوستانه</button>
+</div>
+
+<!-- Name Modal -->
+<div class="modal" id="nameModal">
+  <div class="modal-content">
+    <h3>🎭 نام خود را انتخاب کنید</h3>
+    <input type="text" id="nameInput" placeholder="نام کاربری شما">
+    <button onclick="saveName()">ورود به لابی</button>
+  </div>
+</div>
+
+<!-- Friendly Modal -->
+<div class="modal hidden" id="friendlyModal">
+  <div class="modal-content">
+    <h2>🎮 اتاق‌های دوستانه</h2>
+    <div class="lobby-list" id="lobbyList">
+      <div style="color:#aaa; padding:20px;">هیچ اتاقی وجود ندارد. یکی بسازید!</div>
+    </div>
+    <div style="display:flex; justify-content:center; gap:10px; margin-top:15px;">
+      <button class="create-btn" onclick="showCreateLobbyModal()">➕</button>
+      <button class="secondary" onclick="closeFriendlyModal()" style="padding:12px 25px;">بستن</button>
+    </div>
+  </div>
+</div>
+
+<!-- Create Lobby Modal -->
+<div class="modal hidden" id="createLobbyModal">
+  <div class="modal-content">
+    <h3>نام اتاق را وارد کنید</h3>
+    <input type="text" id="lobbyNameInput" placeholder="مثال: مافیا">
+    <button class="green" onclick="createLobby()">ایجاد کن</button>
+    <button onclick="closeCreateLobbyModal()">بازگشت</button>
+  </div>
+</div>
+
+<!-- Room Inside View -->
+<div class="room-inside hidden" id="roomInsideView">
+  <div class="room-header">
+    <span id="currentRoomName"></span>
+    <button class="leave-room-btn" onclick="leaveRoom()">🚪 خروج</button>
+  </div>
+  <div class="room" id="roomContainer"></div>
+  <div class="bottom-bar">
+    <div id="readyButton" class="ready-btn not-ready" onclick="toggleReady()">آماده نیستم</div>
+    <div class="mic">
+      <img src="https://s6.uplod.ir/i/01186/5j5s8u7t8cvj_t.jpg" alt="mic">
+    </div>
+  </div>
+</div>
+
+<!-- Offline Overlay -->
+<div id="offlineOverlay">
+  <div class="overlay-box">
+    <div>لطفاً منتظر بمونین…</div>
+    <div class="spinner"></div>
+  </div>
+</div>
+
+<script>
+// ===== بدون ذخیره‌سازی نام =====
+let allLobbies = [];
+let currentRoomId = null;
+let currentUser = {
+  name: '',
+  ready: false,
+  seat: 0,
+  avatar: 'https://s6.uplod.ir/i/01186/11ozygqreso3_t.jpg'  // عکس جدید برای داخل بازی نیز استفاده می‌شود
+};
+
+function loadLobbiesFromStorage() {
+  const saved = localStorage.getItem('mafiaLobbies');
+  if (saved) {
+    allLobbies = JSON.parse(saved);
+  } else {
+    allLobbies = [];
+  }
+  displayLobbies(allLobbies);
+}
+
+function saveLobbiesToStorage() {
+  localStorage.setItem('mafiaLobbies', JSON.stringify(allLobbies));
+}
+
+function displayLobbies(lobbies) {
+  const list = document.getElementById('lobbyList');
+  if (!list) return;
+  
+  if (!lobbies || lobbies.length === 0) {
+    list.innerHTML = '<div style="color:#aaa; text-align:center; padding:20px;">📭 هیچ اتاقی وجود ندارد. یکی بسازید!</div>';
+    return;
+  }
+  
+  let html = '';
+  lobbies.forEach(lobby => {
+    html += `
+      <div class="lobby-item">
+        <div style="text-align:right;">
+          <h4>🏠 ${lobby.name}</h4>
+          <p>👤 ${lobby.players} نفر • سازنده: ${lobby.createdBy}</p>
+        </div>
+        <button class="join-btn" onclick="joinLobby('${lobby.id}')">ورود</button>
+      </div>
+    `;
+  });
+  list.innerHTML = html;
+}
+
+function openFriendlyModal() {
+  if (!currentUser.name) {
+    document.getElementById('nameModal').style.display = 'flex';
+    return;
+  }
+  loadLobbiesFromStorage();
+  document.getElementById('friendlyModal').classList.remove('hidden');
+}
+
+function closeFriendlyModal() {
+  document.getElementById('friendlyModal').classList.add('hidden');
+}
+
+function showCreateLobbyModal() {
+  document.getElementById('createLobbyModal').classList.remove('hidden');
+}
+
+function closeCreateLobbyModal() {
+  document.getElementById('createLobbyModal').classList.add('hidden');
+}
+
+function createLobby() {
+  const lobbyName = document.getElementById('lobbyNameInput').value.trim();
+  if (!lobbyName) {
+    alert('لطفاً نام اتاق را وارد کنید');
+    return;
+  }
+  
+  const lobbyId = 'room_' + Date.now();
+  const lobbyData = {
+    id: lobbyId,
+    name: lobbyName,
+    players: 1,
+    createdBy: currentUser.name,
+    createdAt: Date.now()
+  };
+  
+  allLobbies.push(lobbyData);
+  saveLobbiesToStorage();
+  
+  closeCreateLobbyModal();
+  closeFriendlyModal();
+  setTimeout(() => joinLobby(lobbyId), 100);
+}
+
+function joinLobby(lobbyId) {
+  currentRoomId = lobbyId;
+  currentUser.seat = 0;
+  currentUser.ready = false;
+  
+  const lobby = allLobbies.find(l => l.id === lobbyId);
+  document.getElementById('currentRoomName').textContent = lobby ? lobby.name : 'اتاق';
+  
+  generateExactSeats();
+  document.getElementById('roomInsideView').classList.remove('hidden');
+}
+
+function generateExactSeats() {
+  const container = document.getElementById('roomContainer');
+  
+  let html = `
+    <div class="seat-box right">
+        <div class="player">
+            <div id="avatar-0" class="avatar notready" style="background-image:url('${currentUser.avatar}')">
+                <div class="seat-number">1</div>
+            </div>
+            <div class="name" id="name-0">
+                <span>${currentUser.name}</span>
+                <span class="crown">👑</span>
+            </div>
+        </div>
+    </div>
+    ${Array(9).fill('<div class="seat-box left"><div class="empty-seat"></div></div>').join('')}
+  `;
+  
+  container.innerHTML = html;
+}
+
+function toggleReady(){
+    let btn = document.getElementById("readyButton");
+    let avatar = document.getElementById("avatar-0");
+
+    if(btn.classList.contains("not-ready")){
+        btn.classList.remove("not-ready");
+        btn.classList.add("ready");
+        btn.innerText = "آماده هستم";
+        avatar.classList.remove("notready");
+        avatar.classList.add("ready");
+        currentUser.ready = true;
+    } else {
+        btn.classList.remove("ready");
+        btn.classList.add("not-ready");
+        btn.innerText = "آماده نیستم";
+        avatar.classList.remove("ready");
+        avatar.classList.add("notready");
+        currentUser.ready = false;
+    }
+}
+
+function leaveRoom() {
+  document.getElementById('roomInsideView').classList.add('hidden');
+  currentRoomId = null;
+  currentUser.ready = false;
+  loadLobbiesFromStorage();
+}
+
+document.getElementById("nameModal").style.display = "flex";
+
+function saveName(){
+  let name = document.getElementById("nameInput").value.trim();
+  if(name !== ""){
+    document.getElementById("playerName").innerText = name;
+    currentUser.name = name;
+    document.getElementById("nameModal").style.display = "none";
+    document.getElementById("nameInput").value = "";
+  } else {
+    alert("لطفاً یک نام معتبر وارد کنید!");
+  }
+}
+
+function comingSoon(){
+  alert("🚧 این بخش به زودی فعال می‌شود");
+}
+
+function updateOnlineStatus(){
+  const overlay = document.getElementById("offlineOverlay");
+  if(!navigator.onLine){
+    overlay.style.display = "flex";
+  } else {
+    overlay.style.display = "none";
+  }
+}
+
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
+
+loadLobbiesFromStorage();
+</script>
+
+</body>
+  </html>
