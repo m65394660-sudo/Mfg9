@@ -6,7 +6,6 @@
     <title>بازی من - فروشگاه ویژه</title>
     <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
     <style>
-        /* ===== تمام استایل‌های قبلی به همان شکل ===== */
         * {
             margin: 0;
             padding: 0;
@@ -371,6 +370,11 @@
             flex-wrap: wrap;
             gap: 10px;
             border: 1px solid rgba(255,255,255,0.3);
+            transition: all 0.3s ease;
+        }
+        .lobby-item:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.02);
         }
         .lobby-info h4 { color: #fff; font-size: 1.2rem; margin-bottom: 5px; }
         .lobby-info p { color: #ddd; font-size: 0.8rem; }
@@ -382,6 +386,7 @@
             color: white;
             font-weight: bold;
             cursor: pointer;
+            transition: 0.2s;
         }
         .lobby-join-btn:active { transform: scale(0.95); }
         
@@ -833,7 +838,6 @@
         let currentCoins = 8300;
         let ablySync = null;
         let syncChannel = null;
-        let isConnectedToSync = false;
         
         const avatarImg = document.getElementById('userAvatar');
         const gemsSpan = document.getElementById('gemsValue');
@@ -847,21 +851,24 @@
                 } catch(e) { lobbies = []; }
             }
             if(!lobbies) lobbies = [];
-            const oneHourAgo = Date.now() - 3600000;
+            // فیلتر لابی‌های خالی
             lobbies = lobbies.filter(l => l.players && l.players.length > 0);
-            if(window.currentLobbyPage && window.currentLobbyPage.refreshList) {
-                window.currentLobbyPage.refreshList();
-            }
+            return lobbies;
         }
         
         function saveLobbies() {
             localStorage.setItem('mafiaLobbies', JSON.stringify(lobbies));
+            // ارسال بروزرسانی به همه
             if(syncChannel && syncChannel.connection && syncChannel.connection.state === 'connected') {
                 syncChannel.publish('lobby-update', { 
                     lobbies: lobbies, 
                     sender: currentUserId,
                     timestamp: Date.now()
                 });
+            }
+            // بروزرسانی صفحه اگر باز است
+            if(window.currentLobbyPage && window.currentLobbyPage.refreshList) {
+                window.currentLobbyPage.refreshList();
             }
         }
         
@@ -871,7 +878,6 @@
                 ablySync = new Ably.Realtime({ key: 'NNYzzQ.dkJmdA:WRlNRokYR2oFpiCaxxDIRWStSc45mSSITckfVtwGBEo', clientId: currentUserId });
                 ablySync.connection.on('connected', () => {
                     console.log('✅ Sync connected');
-                    isConnectedToSync = true;
                     syncChannel = ablySync.channels.get('mafia-sync');
                     
                     syncChannel.subscribe('lobby-update', (msg) => {
@@ -888,6 +894,7 @@
                     syncChannel.subscribe('lobby-created', (msg) => {
                         const data = msg.data;
                         if(data && data.sender !== currentUserId && data.lobby) {
+                            // بررسی نکنیم که قبلاً وجود داره یا نه، مستقیم اضافه کن
                             const exists = lobbies.some(l => l.id === data.lobby.id);
                             if(!exists) {
                                 lobbies.push(data.lobby);
@@ -945,18 +952,16 @@
                         }
                     });
                     
+                    // درخواست بروزرسانی اولیه
                     setTimeout(() => {
                         if(syncChannel && syncChannel.connection && syncChannel.connection.state === 'connected') {
-                            syncChannel.publish('lobby-update', { lobbies: lobbies, sender: currentUserId, timestamp: Date.now() });
+                            syncChannel.publish('lobby-update-request', { 
+                                sender: currentUserId, 
+                                timestamp: Date.now() 
+                            });
                         }
-                    }, 1000);
+                    }, 500);
                 });
-                
-                ablySync.connection.on('failed', () => {
-                    console.error('Sync connection failed');
-                    isConnectedToSync = false;
-                });
-                
             } catch(e) { console.error('Sync error:', e); }
         }
         
@@ -973,6 +978,7 @@
             lobbies.push(newLobby);
             saveLobbies();
             
+            // ارسال رویداد ایجاد لابی به همه
             if(syncChannel && syncChannel.connection && syncChannel.connection.state === 'connected') {
                 syncChannel.publish('lobby-created', { 
                     lobby: newLobby, 
@@ -1202,11 +1208,6 @@
                         }
                     });
                 });
-                
-                ablyVoice.connection.on('failed', () => {
-                    console.error('Voice connection failed');
-                });
-                
             } catch(e) {
                 console.error('Setup voice error:', e);
             }
@@ -1429,27 +1430,23 @@
                 const container = document.getElementById('lobbiesList');
                 if(!container) return;
                 
-                // بارگذاری مجدد از localStorage برای اطمینان
-                const saved = localStorage.getItem('mafiaLobbies');
-                if(saved) {
-                    try {
-                        const freshLobbies = JSON.parse(saved);
-                        if(freshLobbies && freshLobbies.length) {
-                            lobbies = freshLobbies;
-                        }
-                    } catch(e) {}
-                }
+                // بارگذاری مجدد از localStorage
+                loadLobbies();
                 
-                const activeLobbies = lobbies.filter(l => l.players && l.players.length > 0);
-                if(activeLobbies.length === 0) {
+                // فیلتر لابی‌های معتبر
+                const validLobbies = lobbies.filter(l => l.players && l.players.length > 0);
+                
+                if(validLobbies.length === 0) {
                     container.innerHTML = '<div class="no-lobby-message">🎮 هیچ لاوی فعالی وجود ندارد<br>اولین لاوی را شما بسازید! 🎮</div>';
                     return;
                 }
-                container.innerHTML = activeLobbies.map(lobby => `
+                
+                container.innerHTML = validLobbies.map(lobby => `
                     <div class="lobby-item">
                         <div class="lobby-info">
                             <h4>🎭 ${lobby.name}</h4>
                             <p>👑 ${lobby.ownerName} | 👥 ${lobby.players.length}/10 نفر</p>
+                            <p style="font-size:0.7rem; color:#aaa;">🆔 ${lobby.id.substring(lobby.id.length - 6)}</p>
                         </div>
                         ${!lobby.players.some(p => p.id === currentUserId) ? 
                             `<button class="lobby-join-btn" onclick="window.joinHandler('${lobby.id}')">➕ ورود</button>` :
@@ -1457,24 +1454,23 @@
                         }
                     </div>
                 `).join('');
+                
+                console.log('Lobbies refreshed, count:', validLobbies.length);
             }
             
-            // دکمه رفرش دستی
+            // دکمه رفرش
             const refreshBtn = document.getElementById('refreshLobbiesBtn');
             if(refreshBtn) {
                 refreshBtn.onclick = () => {
                     showToast('🔄 در حال بروزرسانی لیست لابی‌ها...');
                     // درخواست بروزرسانی از سرور
                     if(syncChannel && syncChannel.connection && syncChannel.connection.state === 'connected') {
-                        syncChannel.publish('lobby-update', { 
-                            lobbies: lobbies, 
+                        syncChannel.publish('lobby-update-request', { 
                             sender: currentUserId, 
                             timestamp: Date.now(),
-                            requestRefresh: true 
+                            requestingRefresh: true 
                         });
                     }
-                    // بارگذاری مجدد از localStorage
-                    loadLobbies();
                     refreshList();
                     setTimeout(() => {
                         showToast('✅ لیست لابی‌ها بروزرسانی شد');
@@ -1484,9 +1480,16 @@
             
             window.joinHandler = (id) => {
                 const lobby = joinLobby(id);
-                if(lobby) { refreshList(); showLobbyRoom(id); page.remove(); }
+                if(lobby) { 
+                    refreshList(); 
+                    showLobbyRoom(id); 
+                    page.remove(); 
+                }
             };
-            window.enterHandler = (id) => { showLobbyRoom(id); page.remove(); };
+            window.enterHandler = (id) => { 
+                showLobbyRoom(id); 
+                page.remove(); 
+            };
             
             document.getElementById('searchBtn').onclick = () => {
                 const code = document.getElementById('searchInput').value.trim();
@@ -1501,6 +1504,7 @@
                 modalDiv.className = 'create-lobby-modal';
                 modalDiv.innerHTML = `<div class="create-lobby-content"><h2>🎮 لاوی جدید</h2><input type="text" id="lobbyName" placeholder="اسم لاوی..."><div class="create-lobby-buttons"><button class="confirm-create-btn" id="confirmCreate">✨ ایجاد</button><button class="cancel-create-btn" id="cancelCreate">❌ انصراف</button></div></div>`;
                 document.body.appendChild(modalDiv);
+                
                 document.getElementById('confirmCreate').onclick = () => {
                     const name = document.getElementById('lobbyName').value.trim();
                     if(!name) { showToast('❌ اسم لاوی را وارد کنید'); return; }
@@ -1516,8 +1520,21 @@
             };
             
             page.querySelector('.close-friends-btn').onclick = () => page.remove();
+            
+            // ذخیره رفرنس برای بروزرسانی خودکار
             window.currentLobbyPage = { refreshList: refreshList };
+            
+            // بارگذاری اولیه
             refreshList();
+            
+            // بروزرسانی خودکار هر 5 ثانیه
+            const autoRefreshInterval = setInterval(() => {
+                if(document.body.contains(page)) {
+                    refreshList();
+                } else {
+                    clearInterval(autoRefreshInterval);
+                }
+            }, 5000);
         }
         
         // ==================== بخش اصلی ====================
