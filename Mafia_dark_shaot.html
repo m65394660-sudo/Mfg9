@@ -25,151 +25,7 @@
             position: relative;
         }
 
-        /* ========== استایل مودال ثبت‌نام طلایی (جایگزین مودال ساده) ========== */
-        .register-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(12px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 10000;
-        }
-        
-        .register-container {
-            max-width: 500px;
-            width: 90%;
-            background: #0c0c0c;
-            border-radius: 32px;
-            padding: 2rem 1.8rem 2.2rem;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(212, 175, 55, 0.2);
-            border-top: 2px solid #d4af37;
-            border-bottom: 2px solid #b88d2c;
-        }
-
-        .gold-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .gold-header h1 {
-            font-size: 2rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #e4bc5c, #c49b2f, #f5d97f);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        .gold-header .sub {
-            color: #b8a56e;
-            font-size: 0.85rem;
-            margin-top: 8px;
-        }
-
-        .decor-line {
-            height: 2px;
-            width: 70px;
-            background: linear-gradient(90deg, transparent, #d4af37, #f2cd5a, #d4af37, transparent);
-            margin: 10px auto 0;
-        }
-
-        .input-group {
-            margin-bottom: 1.5rem;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .input-group label {
-            color: #e3c77b;
-            font-size: 0.85rem;
-            font-weight: 500;
-            margin-bottom: 6px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .input-group input {
-            background: #1a1a1a;
-            border: 1px solid #2c2c2c;
-            border-radius: 18px;
-            padding: 12px 18px;
-            font-size: 1rem;
-            color: #f0f0f0;
-            transition: all 0.25s;
-            outline: none;
-            font-family: inherit;
-        }
-
-        .input-group input:focus {
-            border-color: #d4af37;
-            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.25);
-            background: #0f0f0f;
-        }
-
-        .btn-gold {
-            width: 100%;
-            background: linear-gradient(95deg, #c49b2f, #e9c468, #b8860b);
-            border: none;
-            border-radius: 40px;
-            padding: 14px 0;
-            font-size: 1.1rem;
-            font-weight: bold;
-            color: #111;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            margin-top: 12px;
-            margin-bottom: 20px;
-            box-shadow: 0 5px 12px rgba(0,0,0,0.5);
-            font-family: inherit;
-        }
-
-        .btn-gold:active {
-            transform: scale(0.98);
-        }
-
-        .register-message-area {
-            text-align: center;
-            margin-top: 10px;
-            font-size: 0.8rem;
-            min-height: 45px;
-        }
-
-        .register-error-msg {
-            color: #ffa7a7;
-            background: rgba(255, 70, 70, 0.1);
-            padding: 6px 12px;
-            border-radius: 50px;
-            display: inline-block;
-        }
-
-        .register-success-msg {
-            color: #d4e68c;
-            background: rgba(212, 175, 55, 0.15);
-            padding: 6px 12px;
-            border-radius: 50px;
-            display: inline-block;
-        }
-
-        .gold-footer {
-            text-align: center;
-            font-size: 0.7rem;
-            color: #5e553b;
-            margin-top: 20px;
-            border-top: 1px solid #2a2418;
-            padding-top: 15px;
-        }
-
-        .asterisk {
-            color: #e9c468;
-        }
-
-        /* بقیه استایل‌های بازی (بدون تغییر) */
+        /* مودال جدید با پس‌زمینه تار */
         .blur-modal {
             position: fixed;
             top: 0;
@@ -247,6 +103,36 @@
             transform: scale(0.95);
         }
 
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(12px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: #1e1e2f;
+            padding: 2rem;
+            border-radius: 2rem;
+            text-align: center;
+            color: white;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.5);
+            width: 90%;
+            max-width: 350px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .modal-content h2 { margin-bottom: 1.5rem; font-size: 1.8rem; }
+        .modal-content input { width: 100%; padding: 12px 15px; border-radius: 50px; border: none; outline: none; font-size: 1rem; text-align: center; margin-bottom: 1rem; font-family: inherit; }
+        .modal-content button { background: #ff9800; color: #1e1e2f; border: none; padding: 10px 20px; border-radius: 40px; font-size: 1.2rem; font-weight: bold; cursor: pointer; transition: 0.2s; width: 100%; }
+
         .top-bar {
             position: fixed;
             top: 0;
@@ -267,6 +153,7 @@
         .currency-emoji { width: 28px; height: 28px; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
         .currency-value { font-size: 1.3rem; font-weight: bold; color: #ffd966; text-shadow: 0 1px 2px black; letter-spacing: 1px; }
 
+        /* استایل پنل کاربری */
         .user-panel {
             position: fixed;
             top: 85px;
@@ -337,6 +224,7 @@
             border: 2px solid rgba(255, 255, 255, 0.15); 
         }
         
+        /* قاب نام کاربری */
         .username-frame {
             position: relative;
             width: 140px;
@@ -396,6 +284,7 @@
         .gallery-img-btn img { width: 130px; height: auto; max-height: 145px; object-fit: cover; display: block; pointer-events: none; border: none; }
         .gallery-img-btn:active { transform: scale(0.94); }
 
+        /* نوار بالایی جدید - فقط یک دکمه مرکزی */
         .top-row {
             position: fixed;
             bottom: 170px;
@@ -432,6 +321,7 @@
             pointer-events: none;
         }
 
+        /* استایل برای سه عکس پایین - کادر زرد */
         .bottom-group {
             position: fixed;
             bottom: 0;
@@ -488,6 +378,7 @@
             transform: scale(0.95);
         }
 
+        /* فروشگاه و سایر صفحات */
         .shop-page {
             position: fixed;
             top: 0;
@@ -1216,34 +1107,11 @@
 </head>
 <body>
 
-    <!-- مودال ثبت‌نام طلایی (جایگزین مودال ساده) -->
-    <div id="registerModal" class="register-modal">
-        <div class="register-container">
-            <div class="gold-header">
-                <h1>✨ ثبت‌نام ویژه ✨</h1>
-                <div class="decor-line"></div>
-                <div class="sub">به جمع طلایی‌ها بپیوندید</div>
-            </div>
-            <form id="registerForm">
-                <div class="input-group">
-                    <label>📱 شماره موبایل <span class="asterisk">*</span></label>
-                    <input type="tel" id="mobile" placeholder="مثال: 09123456789" autocomplete="tel" required>
-                </div>
-                <div class="input-group">
-                    <label>🔒 رمز عبور <span class="asterisk">*</span></label>
-                    <input type="password" id="password" placeholder="حداقل ۶ کاراکتر" autocomplete="new-password" required>
-                </div>
-                <div class="input-group">
-                    <label>🔄 تکرار رمز عبور <span class="asterisk">*</span></label>
-                    <input type="password" id="confirm_password" placeholder="رمز عبور را دوباره وارد کنید" autocomplete="off" required>
-                </div>
-                <button type="submit" class="btn-gold">🚀 ساخت حساب طلایی</button>
-            </form>
-            <div id="registerMessage" class="register-message-area"></div>
-            <div class="gold-footer">
-                <span>⚜️ با امنیت و احترام ⚜️</span><br>
-                <span>همه فیلدها الزامی است</span>
-            </div>
+    <div id="usernameModal" class="modal">
+        <div class="modal-content">
+            <h2>🎮 انتخاب نام کاربری 🎮</h2>
+            <input type="text" id="usernameInput" placeholder="نام خود را وارد کنید..." maxlength="8" autocomplete="off">
+            <button id="saveNameBtn">ورود به بازی</button>
         </div>
     </div>
 
@@ -1276,9 +1144,11 @@
         <div class="gallery-img-btn" data-img="1"><img src="https://cdn.imgurl.ir/uploads/y004260_InShot__.png" alt="تصویر 1"></div>
         <div class="gallery-img-btn" data-img="2"><img src="https://cdn.imgurl.ir/uploads/b855600_InShot__.png" alt="تصویر 2"></div>
         <div class="gallery-img-btn" data-img="3"><img src="https://cdn.imgurl.ir/uploads/58616_InShot__.png" alt="تصویر 3"></div>
+        <!-- عکس شماره چهار (از راست) حذف شد -->
         <div class="gallery-img-btn" data-img="5"><img src="https://cdn.imgurl.ir/uploads/l33891_InShot__.png" alt="تصویر 5"></div>
     </div>
 
+    <!-- نوار بالایی جدید - فقط یک دکمه مرکزی -->
     <div class="top-row">
         <div class="center-main-btn" id="centerMainBtn">
             <img src="https://cdn.imgurl.ir/uploads/u84671_InShot__.png" alt="منوی اصلی">
@@ -1330,7 +1200,6 @@
         const gemsSpan = document.getElementById('gemsValue');
         const coinsSpan = document.getElementById('coinsValue');
         const usernameDisplaySpan = document.getElementById('usernameDisplay');
-        const registerModal = document.getElementById('registerModal');
         
         // توابع صوتی (بدون تغییر)
         function voiceAddLog(msg, isError = false) {
@@ -2044,6 +1913,7 @@
         
         // ==================== توابع مربوط به دکمه جدید و مودال تار ====================
         function showBlurModal() {
+            // ایجاد مودال با پس‌زمینه تار
             const modalDiv = document.createElement('div');
             modalDiv.className = 'blur-modal';
             modalDiv.innerHTML = `
@@ -2061,14 +1931,42 @@
                 </div>
             `;
             document.body.appendChild(modalDiv);
-            document.getElementById('modalBtnFriends').onclick = () => { modalDiv.remove(); showFriendsPage(); };
-            document.getElementById('modalBtnSoon1').onclick = () => { showToast('🚧 به زودی...'); modalDiv.remove(); };
-            document.getElementById('modalBtnSoon2').onclick = () => { showToast('🚧 به زودی...'); modalDiv.remove(); };
-            document.getElementById('closeModalBtn').onclick = () => { modalDiv.remove(); };
-            modalDiv.addEventListener('click', (e) => { if (e.target === modalDiv) modalDiv.remove(); });
+            
+            // دکمه رفتن به بخش لابی‌ها (دوستانه)
+            document.getElementById('modalBtnFriends').onclick = () => {
+                modalDiv.remove();
+                showFriendsPage();
+            };
+            
+            // دکمه‌های "به زودی"
+            document.getElementById('modalBtnSoon1').onclick = () => {
+                showToast('🚧 به زودی...');
+                modalDiv.remove();
+            };
+            
+            document.getElementById('modalBtnSoon2').onclick = () => {
+                showToast('🚧 به زودی...');
+                modalDiv.remove();
+            };
+            
+            // دکمه بستن مودال
+            document.getElementById('closeModalBtn').onclick = () => {
+                modalDiv.remove();
+            };
+            
+            // بستن با کلیک روی background
+            modalDiv.addEventListener('click', (e) => {
+                if (e.target === modalDiv) {
+                    modalDiv.remove();
+                }
+            });
         }
         
         // ==================== بخش اصلی ====================
+        const modal = document.getElementById('usernameModal');
+        const usernameInput = document.getElementById('usernameInput');
+        const saveBtn = document.getElementById('saveNameBtn');
+        
         const centerMainBtn = document.getElementById('centerMainBtn');
         const bottomRight = document.getElementById('bottomRightImg');
         const bottomCenter = document.getElementById('bottomCenterImg');
@@ -2217,64 +2115,41 @@
             page.querySelector('.close-shop-btn').onclick = () => page.remove();
         }
         
-        // ==================== سیستم ثبت‌نام (جایگزین saveUser) ====================
-        function validateMobile(mobile) { return /^09[0-9]{9}$/.test(mobile); }
+        function loadUser() {
+            const savedName = localStorage.getItem('gameUsername');
+            const savedId = localStorage.getItem('userId');
+            if(savedName && savedName.trim() !== "") {
+                currentUsername = savedName.length > 8 ? savedName.slice(0,8) : savedName;
+                usernameDisplaySpan.innerText = currentUsername;
+                modal.style.display = 'none';
+                if(savedId) currentUserId = savedId;
+                else { currentUserId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6); localStorage.setItem('userId', currentUserId); }
+                connectGift();
+                initSyncChannel();
+                loadLobbiesFromLocal();
+            } else { modal.style.display = 'flex'; usernameInput.focus(); }
+        }
         
-        function registerUser(event) {
-            event.preventDefault();
-            const mobile = document.getElementById('mobile').value.trim();
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirm_password').value;
-            const messageDiv = document.getElementById('registerMessage');
-            
-            if (mobile === "") { messageDiv.innerHTML = '<span class="register-error-msg">❌ شماره موبایل را وارد کنید</span>'; return false; }
-            if (!validateMobile(mobile)) { messageDiv.innerHTML = '<span class="register-error-msg">❌ شماره موبایل نامعتبر! باید با 09 شروع و 11 رقم باشد</span>'; return false; }
-            if (password === "") { messageDiv.innerHTML = '<span class="register-error-msg">❌ رمز عبور را وارد کنید</span>'; return false; }
-            if (password.length < 6) { messageDiv.innerHTML = '<span class="register-error-msg">❌ رمز عبور باید حداقل ۶ کاراکتر باشد</span>'; return false; }
-            if (confirmPassword === "") { messageDiv.innerHTML = '<span class="register-error-msg">❌ رمز عبور را تکرار کنید</span>'; return false; }
-            if (password !== confirmPassword) { messageDiv.innerHTML = '<span class="register-error-msg">❌ رمز عبور و تکرار آن مطابقت ندارند</span>'; return false; }
-            
-            // ثبت‌نام موفق - ایجاد حساب کاربری
-            currentUsername = mobile.slice(-6); // استفاده از ۶ رقم آخر موبایل به عنوان نام کاربری
+        function saveUser() {
+            let name = usernameInput.value.trim();
+            if(!name) { alert("لطفاً نام خود را وارد کنید!"); return; }
+            if(name.length > 8) name = name.slice(0,8);
+            currentUsername = name;
             currentUserId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2,6);
             localStorage.setItem('gameUsername', currentUsername);
             localStorage.setItem('userId', currentUserId);
-            localStorage.setItem('userMobile', mobile);
             usernameDisplaySpan.innerText = currentUsername;
-            
-            messageDiv.innerHTML = '<span class="register-success-msg">✅ ثبت‌نام با موفقیت انجام شد! خوش آمدید ✨</span>';
-            
-            setTimeout(() => {
-                registerModal.style.display = 'none';
-                showToast(`✅ خوش آمدی ${currentUsername}!`);
-                connectGift();
-                initSyncChannel();
-                initLocalSyncFallback();
-                loadLobbiesFromLocal();
-            }, 1500);
-            
-            return true;
+            modal.style.display = 'none';
+            connectGift();
+            initSyncChannel();
+            loadLobbiesFromLocal();
+            showToast(`✅ خوش آمدی ${currentUsername}!`);
         }
         
-        function checkExistingUser() {
-            const savedName = localStorage.getItem('gameUsername');
-            const savedId = localStorage.getItem('userId');
-            if(savedName && savedName.trim() !== "" && savedId) {
-                currentUsername = savedName.length > 8 ? savedName.slice(0,8) : savedName;
-                currentUserId = savedId;
-                usernameDisplaySpan.innerText = currentUsername;
-                registerModal.style.display = 'none';
-                connectGift();
-                initSyncChannel();
-                initLocalSyncFallback();
-                loadLobbiesFromLocal();
-                showToast(`✅ خوش آمدی ${currentUsername}!`);
-            }
-        }
+        saveBtn.onclick = saveUser;
+        usernameInput.onkeypress = (e) => { if(e.key === 'Enter') saveUser(); };
         
         // اتصال رویدادها
-        document.getElementById('registerForm').addEventListener('submit', registerUser);
-        
         if(centerMainBtn) centerMainBtn.onclick = (e) => { e.stopPropagation(); showBlurModal(); };
         if(shopButton) shopButton.onclick = (e) => { e.stopPropagation(); showShop(); };
         if(profileBtn) profileBtn.onclick = (e) => { e.stopPropagation(); showProfile(); };
@@ -2284,25 +2159,22 @@
         if(bottomCenter) bottomCenter.onclick = silent;
         galleryBtns.forEach(btn => btn.onclick = silent);
         
-        usernameDisplaySpan.ondblclick = () => { registerModal.style.display = 'flex'; };
+        usernameDisplaySpan.ondblclick = () => { modal.style.display = 'flex'; usernameInput.value = localStorage.getItem('gameUsername') || ''; usernameInput.focus(); };
         document.getElementById('userAvatar').onerror = () => { document.getElementById('userAvatar').src = "https://via.placeholder.com/80?text=Avatar"; };
         
-        checkExistingUser();
+        loadUser();
         loadCurrencies();
+        window.onload = () => { if(localStorage.getItem('gameUsername')) modal.style.display = 'none'; const g = document.getElementById('rightGallery'); if(g) { g.style.background = 'transparent'; g.style.backdropFilter = 'none'; g.style.border = 'none'; } };
         
         window.retryConnection = function() {
             const txt = document.querySelector('#mafiaDialog .dialog-text');
             if(txt) txt.innerHTML = 'در حال بررسی اتصال...';
             setTimeout(() => {
-                if(navigator.onLine) { 
-                    if(txt) txt.innerHTML = 'اتصال برقرار شد'; 
-                    setTimeout(() => { document.getElementById('mafiaDialog').style.display = 'none'; }, 1200);
-                } else { 
-                    if(txt) txt.innerHTML = 'اتصال برقرار نشد<br>لطفاً دوباره تلاش کنید'; 
-                }
+                if(navigator.onLine) { if(txt) txt.innerHTML = 'اتصال برقرار شد'; setTimeout(() => { document.getElementById('mafiaDialog').style.display = 'none'; }, 1200); }
+                else { if(txt) txt.innerHTML = 'اتصال برقرار نشد<br>لطفاً دوباره تلاش کنید'; }
             }, 1500);
         };
         setTimeout(() => { if(!navigator.onLine) document.getElementById('mafiaDialog').style.display = 'flex'; }, 500);
     </script>
 </body>
-    </html>
+</html>
