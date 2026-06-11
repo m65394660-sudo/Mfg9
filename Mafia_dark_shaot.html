@@ -1070,6 +1070,39 @@
         @keyframes liveMove { 0% { right: -40%; } 100% { right: 120%; } }
         @keyframes dialogShow { from { opacity: 0; transform: scale(.92); } to { opacity: 1; transform: scale(1); } }
         
+        /* دکمه شروع موسیقی */
+        .music-start-btn {
+            position: fixed;
+            bottom: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #ff8800, #ff5500);
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 60px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 10000;
+            box-shadow: 0 0 20px rgba(255,100,0,0.5);
+            animation: pulse 1.5s infinite;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .music-start-btn:active {
+            transform: translateX(-50%) scale(0.95);
+        }
+        
+        @keyframes pulse {
+            0% { transform: translateX(-50%) scale(1); box-shadow: 0 0 0 0 rgba(255,100,0,0.7); }
+            70% { transform: translateX(-50%) scale(1.05); box-shadow: 0 0 0 15px rgba(255,100,0,0); }
+            100% { transform: translateX(-50%) scale(1); box-shadow: 0 0 0 0 rgba(255,100,0,0); }
+        }
+        
         @media(max-width:700px){
             .player-seat{ width:78px; height:78px; } .player-seat::before{ width:98px; height:98px; }
             .player-seat img{ width:58px; height:58px; } .empty-icon{ font-size:30px; }
@@ -1096,6 +1129,7 @@
             .username-frame { width: 110px; }
             .username-text-on-image { font-size: 0.8rem; }
             .center-main-btn img { max-width: 200px; max-height: 200px; }
+            .music-start-btn { padding: 10px 24px; font-size: 0.9rem; bottom: 25%; }
         }
         
         @media (max-width: 600px) { .packs-grid { gap: 16px; padding: 0 15px; } .pack-icon { font-size: 2.8rem; } .pack-coins { font-size: 1.4rem; } .pack-name { font-size: 0.8rem; } .shop-header h1 { font-size: 1.9rem; } .close-shop-btn { font-size: 1rem; padding: 10px 24px; } .toast-msg { font-size: 0.8rem; white-space: normal; text-align: center; width: 80%; } .center-main-btn img { max-width: 180px; max-height: 180px; } }
@@ -1144,7 +1178,6 @@
         <div class="gallery-img-btn" data-img="1"><img src="https://cdn.imgurl.ir/uploads/y004260_InShot__.png" alt="تصویر 1"></div>
         <div class="gallery-img-btn" data-img="2"><img src="https://cdn.imgurl.ir/uploads/b855600_InShot__.png" alt="تصویر 2"></div>
         <div class="gallery-img-btn" data-img="3"><img src="https://cdn.imgurl.ir/uploads/58616_InShot__.png" alt="تصویر 3"></div>
-        <!-- عکس شماره چهار (از راست) حذف شد -->
         <div class="gallery-img-btn" data-img="5"><img src="https://cdn.imgurl.ir/uploads/l33891_InShot__.png" alt="تصویر 5"></div>
     </div>
 
@@ -1172,6 +1205,72 @@
     </div>
 
     <script>
+        // ==================== آهنگ زمینه با آدرس جدید ====================
+        let backgroundMusic = null;
+        let musicStarted = false;
+        
+        function createMusicButton() {
+            // حذف دکمه قبلی اگر وجود داشته باشد
+            const existingBtn = document.querySelector('.music-start-btn');
+            if(existingBtn) existingBtn.remove();
+            
+            const musicBtn = document.createElement('button');
+            musicBtn.className = 'music-start-btn';
+            musicBtn.innerHTML = '🎵 شروع موسیقی 🎵';
+            musicBtn.onclick = () => {
+                if (backgroundMusic) {
+                    backgroundMusic.play().then(() => {
+                        musicStarted = true;
+                        musicBtn.remove();
+                        showToast('🎵 موسیقی شروع شد!');
+                    }).catch(e => {
+                        console.log('Play error:', e);
+                        showToast('❌ خطا در پخش موسیقی');
+                    });
+                } else {
+                    // ساخت مجدد audio
+                    try {
+                        backgroundMusic = new Audio('https://cdn.imgurl.ir/uploads/u42086_Night_Current.mp3');
+                        backgroundMusic.loop = true;
+                        backgroundMusic.volume = 0.3;
+                        backgroundMusic.play().then(() => {
+                            musicStarted = true;
+                            musicBtn.remove();
+                            showToast('🎵 موسیقی شروع شد!');
+                        }).catch(e => {
+                            showToast('❌ لطفاً دوباره کلیک کنید');
+                        });
+                    } catch(e) {
+                        showToast('❌ خطا در بارگذاری موسیقی');
+                    }
+                }
+            };
+            document.body.appendChild(musicBtn);
+        }
+        
+        function initBackgroundMusic() {
+            try {
+                backgroundMusic = new Audio('https://cdn.imgurl.ir/uploads/u42086_Night_Current.mp3');
+                backgroundMusic.loop = true;
+                backgroundMusic.volume = 0.3;
+                
+                // تلاش برای پخش خودکار (ممکن است توسط مرورگر مسدود شود)
+                const playPromise = backgroundMusic.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        musicStarted = true;
+                        console.log('Music started automatically');
+                    }).catch(error => {
+                        console.log('Auto-play prevented, showing button');
+                        createMusicButton();
+                    });
+                }
+            } catch(e) {
+                console.log('Audio init error:', e);
+                createMusicButton();
+            }
+        }
+
         // ==================== توابع کمکی ====================
         function toPersianNumber(number) {
             const persianDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
@@ -1186,6 +1285,8 @@
         
         let ablyClient = null;
         let lobbyChannel = null;
+        let ablyInitialized = false;
+        let ablyRetryCount = 0;
         
         // ==================== سیستم صوتی ====================
         let voiceChannel = null;
@@ -1201,7 +1302,7 @@
         const coinsSpan = document.getElementById('coinsValue');
         const usernameDisplaySpan = document.getElementById('usernameDisplay');
         
-        // توابع صوتی (بدون تغییر)
+        // توابع صوتی
         function voiceAddLog(msg, isError = false) {
             const time = new Date().toLocaleTimeString('fa-IR');
             console.log(`${isError ? '❌' : '✅'} [${time}] ${msg}`);
@@ -1231,7 +1332,7 @@
                 const audioUrl = URL.createObjectURL(blob);
                 const audio = new Audio();
                 audio.src = audioUrl;
-                audio.play();
+                audio.play().catch(e => console.log('Play error:', e));
                 audio.onended = () => URL.revokeObjectURL(audioUrl);
                 voiceAddLog(`🔊 پخش صدای ذخیره شده`);
             } catch(e) {
@@ -1325,7 +1426,7 @@
         
         async function voiceStartRecording() {
             if (!voiceChannel) {
-                voiceAddLog('❌ اتصال صوتی برقرار نیست!', true);
+                voiceAddLog('❌ اتصال صوتی برقرار نیست! لطفاً ابتدا منتظر بمانید تا کانال صوتی آماده شود', true);
                 return;
             }
             
@@ -1382,7 +1483,7 @@
                     voiceAddLog('⏹️ ضبط متوقف شد');
                 };
                 
-                mediaRecorder.start();
+                mediaRecorder.start(1000);
                 isVoiceRecording = true;
                 const micBtn = document.getElementById('voiceMicBtn');
                 if(micBtn) {
@@ -1411,6 +1512,10 @@
         }
         
         function voiceInitForLobby(lobbyId) {
+            if(!ablyClient || !ablyInitialized) {
+                voiceAddLog('⚠️ اتصال Ably برقرار نیست، صدای لابی غیرفعال است', true);
+                return;
+            }
             if(currentVoiceLobbyId === lobbyId) return;
             currentVoiceLobbyId = lobbyId;
             voiceHistory = [];
@@ -1420,20 +1525,24 @@
                 try { voiceChannel.unsubscribe(); } catch(e) {}
             }
             
-            const voiceChanName = `voice-lobby-${lobbyId}`;
-            voiceChannel = ablyClient.channels.get(voiceChanName);
-            
-            voiceChannel.subscribe('voice', (message) => {
-                const data = message.data;
-                if(data && data.data && data.sender !== currentUsername) {
-                    voicePlayReceived(data.data, data.type || 'audio/webm');
-                }
-            });
-            
-            voiceChannel.attach((err) => {
-                if(err) voiceAddLog(`خطا در کانال صوتی: ${err.message}`, true);
-                else voiceAddLog(`📡 کانال صوتی لابی آماده است`);
-            });
+            try {
+                const voiceChanName = `voice-lobby-${lobbyId}`;
+                voiceChannel = ablyClient.channels.get(voiceChanName);
+                
+                voiceChannel.subscribe('voice', (message) => {
+                    const data = message.data;
+                    if(data && data.data && data.sender !== currentUsername) {
+                        voicePlayReceived(data.data, data.type || 'audio/webm');
+                    }
+                });
+                
+                voiceChannel.attach((err) => {
+                    if(err) voiceAddLog(`خطا در کانال صوتی: ${err.message}`, true);
+                    else voiceAddLog(`📡 کانال صوتی لابی آماده است`);
+                });
+            } catch(e) {
+                voiceAddLog(`خطا در راه‌اندازی صوتی: ${e.message}`, true);
+            }
             
             voiceRenderHistory();
         }
@@ -1449,46 +1558,72 @@
         }
         
         // ==================== بقیه توابع لابی ====================
+        function waitForAbly(callback) {
+            if (typeof Ably !== 'undefined') {
+                callback();
+            } else {
+                console.log('Waiting for Ably library to load...');
+                setTimeout(() => waitForAbly(callback), 500);
+            }
+        }
+        
         function initSyncChannel() {
             if(!currentUserId) return;
-            if(ablyClient) { try { ablyClient.close(); } catch(e) {} }
-            
-            try {
-                ablyClient = new Ably.Realtime({ 
-                    key: 'NNYzzQ.dkJmdA:WRlNRokYR2oFpiCaxxDIRWStSc45mSSITckfVtwGBEo', 
-                    clientId: currentUserId 
-                });
-                
-                ablyClient.connection.on('connected', () => {
-                    console.log('✅ اتصال به Ably برقرار شد');
-                    lobbyChannel = ablyClient.channels.get('lobby-sync-global');
-                    
-                    lobbyChannel.subscribe('lobby-event', (message) => {
-                        if(message.data && message.data.sender !== currentUserId) {
-                            handleSyncMessage(message.data);
-                        }
-                    });
-                    
-                    lobbyChannel.publish('lobby-event', {
-                        type: 'request-lobbies',
-                        sender: currentUserId,
-                        timestamp: Date.now()
-                    });
-                    
-                    setInterval(() => {
-                        if(lobbyChannel) {
-                            lobbyChannel.publish('lobby-event', {
-                                type: 'request-lobbies',
-                                sender: currentUserId,
-                                timestamp: Date.now()
-                            });
-                        }
-                    }, 30000);
-                });
-                
-            } catch(e) {
-                console.error('Init error:', e);
+            if(ablyClient) { 
+                try { ablyClient.close(); } catch(e) {} 
+                ablyClient = null;
             }
+            
+            waitForAbly(() => {
+                try {
+                    ablyClient = new Ably.Realtime({ 
+                        key: 'NNYzzQ.dkJmdA:WRlNRokYR2oFpiCaxxDIRWStSc45mSSITckfVtwGBEo', 
+                        clientId: currentUserId 
+                    });
+                    
+                    ablyClient.connection.on('connected', () => {
+                        console.log('✅ اتصال به Ably برقرار شد');
+                        ablyInitialized = true;
+                        ablyRetryCount = 0;
+                        lobbyChannel = ablyClient.channels.get('lobby-sync-global');
+                        
+                        lobbyChannel.subscribe('lobby-event', (message) => {
+                            if(message.data && message.data.sender !== currentUserId) {
+                                handleSyncMessage(message.data);
+                            }
+                        });
+                        
+                        lobbyChannel.publish('lobby-event', {
+                            type: 'request-lobbies',
+                            sender: currentUserId,
+                            timestamp: Date.now()
+                        });
+                        
+                        setInterval(() => {
+                            if(lobbyChannel && ablyInitialized) {
+                                lobbyChannel.publish('lobby-event', {
+                                    type: 'request-lobbies',
+                                    sender: currentUserId,
+                                    timestamp: Date.now()
+                                });
+                            }
+                        }, 30000);
+                    });
+                    
+                    ablyClient.connection.on('failed', (err) => {
+                        console.error('Ably connection failed:', err);
+                        ablyInitialized = false;
+                        if (ablyRetryCount < 3) {
+                            ablyRetryCount++;
+                            setTimeout(() => initSyncChannel(), 3000);
+                        }
+                    });
+                    
+                } catch(e) {
+                    console.error('Init error:', e);
+                    ablyInitialized = false;
+                }
+            });
         }
         
         function initLocalSyncFallback() {
@@ -1505,13 +1640,15 @@
             }
             window.addEventListener('storage', (event) => {
                 if(event.key === 'mafiaLobbiesFallback' && event.newValue) {
-                    const newLobbies = JSON.parse(event.newValue);
-                    if(JSON.stringify(lobbies) !== JSON.stringify(newLobbies)) {
-                        lobbies = newLobbies;
-                        if(window.currentLobbyPage && window.currentLobbyPage.refreshList) {
-                            window.currentLobbyPage.refreshList();
+                    try {
+                        const newLobbies = JSON.parse(event.newValue);
+                        if(JSON.stringify(lobbies) !== JSON.stringify(newLobbies)) {
+                            lobbies = newLobbies;
+                            if(window.currentLobbyPage && window.currentLobbyPage.refreshList) {
+                                window.currentLobbyPage.refreshList();
+                            }
                         }
-                    }
+                    } catch(e) {}
                 }
             });
         }
@@ -1537,7 +1674,7 @@
                 case 'lobby-join':
                     const lobbyToJoin = lobbies.find(l => l.id === data.lobbyId);
                     if(lobbyToJoin && !lobbyToJoin.players.some(p => p.id === data.userId)) {
-                        lobbyToJoin.players.push({ id: data.userId, name: data.userName, avatar: data.avatar });
+                        lobbyToJoin.players.push({ id: data.userId, name: data.userName, avatar: data.avatar || avatarImg.src });
                         saveLobbiesToLocal();
                         if(data.userId !== currentUserId) showToast(`👤 ${data.userName} وارد لابی ${lobbyToJoin.name} شد`);
                         if(window.currentLobbyRoom && window.currentLobbyRoom.lobbyId === data.lobbyId) window.currentLobbyRoom.updateUI();
@@ -1570,7 +1707,7 @@
                     }
                     break;
                 case 'request-lobbies':
-                    if(lobbyChannel) {
+                    if(lobbyChannel && ablyInitialized) {
                         lobbyChannel.publish('lobby-event', {
                             type: 'lobbies-list',
                             lobbies: lobbies,
@@ -1583,7 +1720,7 @@
         }
         
         function broadcastMessage(message) {
-            if(lobbyChannel) {
+            if(lobbyChannel && ablyInitialized) {
                 try { lobbyChannel.publish('lobby-event', message); } catch(e) {}
             }
             if(window.fallbackChannel) {
@@ -1671,7 +1808,18 @@
                 voiceCleanup();
             }
             
-            voiceInitForLobby(lobbyId);
+            if(ablyInitialized) {
+                voiceInitForLobby(lobbyId);
+            } else {
+                voiceAddLog('⏳ منتظر اتصال Ably برای فعال‌سازی صدا...', false);
+                const checkAbly = setInterval(() => {
+                    if(ablyInitialized) {
+                        clearInterval(checkAbly);
+                        voiceInitForLobby(lobbyId);
+                    }
+                }, 1000);
+                setTimeout(() => clearInterval(checkAbly), 15000);
+            }
             
             const roomPage = document.createElement('div');
             roomPage.style.position = 'fixed';
@@ -1913,7 +2061,6 @@
         
         // ==================== توابع مربوط به دکمه جدید و مودال تار ====================
         function showBlurModal() {
-            // ایجاد مودال با پس‌زمینه تار
             const modalDiv = document.createElement('div');
             modalDiv.className = 'blur-modal';
             modalDiv.innerHTML = `
@@ -1932,13 +2079,11 @@
             `;
             document.body.appendChild(modalDiv);
             
-            // دکمه رفتن به بخش لابی‌ها (دوستانه)
             document.getElementById('modalBtnFriends').onclick = () => {
                 modalDiv.remove();
                 showFriendsPage();
             };
             
-            // دکمه‌های "به زودی"
             document.getElementById('modalBtnSoon1').onclick = () => {
                 showToast('🚧 به زودی...');
                 modalDiv.remove();
@@ -1949,12 +2094,10 @@
                 modalDiv.remove();
             };
             
-            // دکمه بستن مودال
             document.getElementById('closeModalBtn').onclick = () => {
                 modalDiv.remove();
             };
             
-            // بستن با کلیک روی background
             modalDiv.addEventListener('click', (e) => {
                 if (e.target === modalDiv) {
                     modalDiv.remove();
@@ -2072,18 +2215,20 @@
         let ablyGift = null, giftChannel = null;
         function connectGift() {
             if(typeof Ably === 'undefined' || !currentUserId) return;
-            try {
-                ablyGift = new Ably.Realtime({ key: 'NNYzzQ.dkJmdA:WRlNRokYR2oFpiCaxxDIRWStSc45mSSITckfVtwGBEo', clientId: currentUserId });
-                ablyGift.connection.on('connected', () => {
-                    giftChannel = ablyGift.channels.get('gift-channel');
-                    giftChannel.subscribe('gift', (msg) => {
-                        if(msg.data && msg.data.to === currentUserId) {
-                            addCoins(msg.data.amount);
-                            showToast(`🎁 ${msg.data.from} به شما ${toPersianNumber(msg.data.amount)} سکه هدیه داد!`);
-                        }
+            waitForAbly(() => {
+                try {
+                    ablyGift = new Ably.Realtime({ key: 'NNYzzQ.dkJmdA:WRlNRokYR2oFpiCaxxDIRWStSc45mSSITckfVtwGBEo', clientId: currentUserId });
+                    ablyGift.connection.on('connected', () => {
+                        giftChannel = ablyGift.channels.get('gift-channel');
+                        giftChannel.subscribe('gift', (msg) => {
+                            if(msg.data && msg.data.to === currentUserId) {
+                                addCoins(msg.data.amount);
+                                showToast(`🎁 ${msg.data.from} به شما ${toPersianNumber(msg.data.amount)} سکه هدیه داد!`);
+                            }
+                        });
                     });
-                });
-            } catch(e) { console.error(e); }
+                } catch(e) { console.error(e); }
+            });
         }
         
         function showGift() {
@@ -2126,7 +2271,9 @@
                 else { currentUserId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6); localStorage.setItem('userId', currentUserId); }
                 connectGift();
                 initSyncChannel();
+                initLocalSyncFallback();
                 loadLobbiesFromLocal();
+                initBackgroundMusic();
             } else { modal.style.display = 'flex'; usernameInput.focus(); }
         }
         
@@ -2142,14 +2289,15 @@
             modal.style.display = 'none';
             connectGift();
             initSyncChannel();
+            initLocalSyncFallback();
             loadLobbiesFromLocal();
             showToast(`✅ خوش آمدی ${currentUsername}!`);
+            initBackgroundMusic();
         }
         
         saveBtn.onclick = saveUser;
         usernameInput.onkeypress = (e) => { if(e.key === 'Enter') saveUser(); };
         
-        // اتصال رویدادها
         if(centerMainBtn) centerMainBtn.onclick = (e) => { e.stopPropagation(); showBlurModal(); };
         if(shopButton) shopButton.onclick = (e) => { e.stopPropagation(); showShop(); };
         if(profileBtn) profileBtn.onclick = (e) => { e.stopPropagation(); showProfile(); };
